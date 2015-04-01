@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TodoList</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_add">Add</string>
+    <string name="lbl_add_task_hint">Type your task here..</string>
+    <string name="btn_delete_item">Delete Item</string>
+
+</resources>
