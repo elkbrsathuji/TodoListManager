@@ -1,6 +1,9 @@
 package il.ac.huji.todolist;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,23 +15,24 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class TodoListManagerActivity extends ActionBarActivity {
 
     ListView mTodoList;
-    EditText mAddTask;
-    ArrayList<String> mTasks;
+    ArrayList<Task> mTasks;
     TasksAdapter mAdapter;
+
+    private  final static int ADD_TASK=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list_manager);
 
         mTodoList=(ListView)findViewById(R.id.lstTodoItems);
-        mAddTask=(EditText)findViewById(R.id.edtNewItem);
 
-mTasks=new ArrayList<String>();
+mTasks=new ArrayList<Task>();
        mAdapter  = new TasksAdapter(this,mTasks);
         mTodoList.setAdapter(mAdapter);
 
@@ -43,9 +47,10 @@ alertDeleteDialog(position);
     }
 
     private void alertDeleteDialog(final int position){
+        final Task curTask=mTasks.get(position);
         final Dialog dialog= new Dialog(this);
         dialog.setContentView(R.layout.delete_dialog);
-        dialog.setTitle(mTasks.get(position));
+        dialog.setTitle(curTask.getTitle());
         Button delBtn=(Button)dialog.findViewById(R.id.menuItemDelete);
         delBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +60,24 @@ alertDeleteDialog(position);
                 dialog.dismiss();
             }
         });
-        dialog.show();
+Button callBtn=(Button)dialog.findViewById(R.id.menuItemCall);
+if (curTask.getTitle().startsWith("Call ") ){
+    callBtn.setVisibility(View.VISIBLE);
+    callBtn.setText(curTask.getTitle());
+    callBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String number = curTask.getTitle().replace("Call","").trim();
+            Intent intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse("tel:" + number));
+            startActivity(intent);
+        }
+    });
+
+}else{
+    callBtn.setVisibility(View.GONE);        }
+            dialog.show();
+
     }
 
     @Override
@@ -74,13 +96,27 @@ alertDeleteDialog(position);
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_menu) {
-            String newTask=mAddTask.getText().toString();
-            mTasks.add(newTask);
-            mAddTask.setText("");
-            mAdapter.notifyDataSetChanged();
+            Intent intent= new Intent(this, AddNewTodoItemActivity.class);
+            startActivityForResult(intent,ADD_TASK);
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case ADD_TASK:
+                if (resultCode== Activity.RESULT_OK){
+                    String title=data.getExtras().getString("title");
+                    Date date=(Date)data.getExtras().getSerializable("dueDate");
+                    Task task=new Task(title,date);
+                    mTasks.add(task);
+                    mAdapter.notifyDataSetChanged();
+                }
+                break;
+        }
     }
 }

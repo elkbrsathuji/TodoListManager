@@ -9,14 +9,7 @@
     android:orientation="vertical"
     tools:context=".TodoListManagerActivity">
 
-    <EditText
-        android:id="@+id/edtNewItem"
-        android:layout_width="match_parent"
-        android:padding="16dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/lbl_add_task_hint"
-        android:gravity="center"
-        />
+
 
 
     <ListView

@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Android- on 3/31/2015.
@@ -17,9 +18,9 @@ public class TasksAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater = null;
     private Context mContext;
-    private ArrayList<String> mTasksList;
+    private ArrayList<Task> mTasksList;
 
-    public TasksAdapter(Context context, ArrayList<String> list) {
+    public TasksAdapter(Context context, ArrayList<Task> list) {
         mTasksList = list;
         mContext = context;
         mInflater = LayoutInflater.from(context);
@@ -43,23 +44,39 @@ public class TasksAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        TextView taskTitle;
-        String curTask;
+        ViewHolder holder;
+        Task curTask;
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.row_task, null);
-            taskTitle = (TextView) convertView.findViewById(R.id.task);
-            convertView.setTag(taskTitle);
+            holder= new ViewHolder();
+
+
+            holder.title = (TextView) convertView.findViewById(R.id.txtTodoTitle);
+            holder.date=(TextView)convertView.findViewById(R.id.txtTodoDueDate);
+            convertView.setTag(holder);
 
         } else {
-            taskTitle = (TextView) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
-        taskTitle.setText(mTasksList.get(position));
-        if (position % 2 == 0) {
-            taskTitle.setTextColor(Color.RED);
-        } else {
-            taskTitle.setTextColor(Color.BLUE);
+         curTask=mTasksList.get(position);
+        holder.title.setText(curTask.getTitle());
+        holder.date.setText(curTask.getDateAsString());
+        if (curTask.getDueDate().before(new Date())) {
+            holder.title.setTextColor(Color.RED);
+            holder.date.setTextColor(Color.RED);
+        }
+
+        else {
+            holder.title.setTextColor(Color.BLACK);
+            holder.date.setTextColor(Color.BLACK);
         }
         return convertView;
+    }
+
+
+    class ViewHolder{
+        TextView title;
+        TextView date;
     }
 }

@@ -7,5 +7,9 @@
     <string name="menu_add">Add</string>
     <string name="lbl_add_task_hint">Type your task here..</string>
     <string name="btn_delete_item">Delete Item</string>
+    <string name="lbl_no_due_date">No due date</string>
+    <string name="title_activity_add_new_todo_item">AddNewTodoItemActivity</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
