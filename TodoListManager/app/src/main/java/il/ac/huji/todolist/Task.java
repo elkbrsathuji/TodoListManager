@@ -10,8 +10,11 @@ public class Task {
 
   private  String title;
     private Date dueDate;
+private long id;
 
+    public Task(){
 
+    }
     public Task(String title,Date dueDate) {
      this.title=title;
         this.dueDate = dueDate;
@@ -36,5 +39,13 @@ public class Task {
     public String getDateAsString(){
         SimpleDateFormat fmtOut = new SimpleDateFormat("dd/MM/yyyy");
         return fmtOut.format(this.dueDate);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

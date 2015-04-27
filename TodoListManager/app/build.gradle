@@ -4,6 +4,7 @@ android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
+
     defaultConfig {
         applicationId "il.ac.huji.todolist"
         minSdkVersion 14
@@ -17,6 +18,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {

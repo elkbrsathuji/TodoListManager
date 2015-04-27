@@ -23,7 +23,7 @@ public class TodoListManagerActivity extends ActionBarActivity {
     ListView mTodoList;
     ArrayList<Task> mTasks;
     TasksAdapter mAdapter;
-
+private TasksDAO mDAO;
     private  final static int ADD_TASK=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,12 @@ public class TodoListManagerActivity extends ActionBarActivity {
 
         mTodoList=(ListView)findViewById(R.id.lstTodoItems);
 
-mTasks=new ArrayList<Task>();
+mDAO = new TasksDAO(this);
+        mDAO.open();
+
+
+
+mTasks=mDAO.getAllTasks();
        mAdapter  = new TasksAdapter(this,mTasks);
         mTodoList.setAdapter(mAdapter);
 
@@ -46,6 +51,12 @@ alertDeleteDialog(position);
         });
     }
 
+    @Override
+    protected void onResume() {
+        mDAO.open();
+        super.onResume();
+    }
+
     private void alertDeleteDialog(final int position){
         final Task curTask=mTasks.get(position);
         final Dialog dialog= new Dialog(this);
@@ -55,6 +66,8 @@ alertDeleteDialog(position);
         delBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                mDAO.deleteTask(curTask);
                 mTasks.remove(position);
                 mAdapter.notifyDataSetChanged();
                 dialog.dismiss();
@@ -110,13 +123,21 @@ if (curTask.getTitle().startsWith("Call ") ){
         switch (requestCode){
             case ADD_TASK:
                 if (resultCode== Activity.RESULT_OK){
+                    mDAO.open();
                     String title=data.getExtras().getString("title");
                     Date date=(Date)data.getExtras().getSerializable("dueDate");
                     Task task=new Task(title,date);
-                    mTasks.add(task);
+                    Task insertedTask=mDAO.createTask(task);
+                    mTasks.add(insertedTask);
                     mAdapter.notifyDataSetChanged();
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        mDAO.close();
+        super.onPause();
     }
 }
